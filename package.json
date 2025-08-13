@@ -1,7 +1,7 @@
 {
   "name": "youtube-pro",
   "version": "1.0.0",
-  "description": "first backend project - chai and code ",
+  "description": "first backend project",
   "type": "module",
   "main": "index.js",
   "scripts": {
