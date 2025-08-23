@@ -2,7 +2,7 @@ import mongoose,{Schema} from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
     username:{
         type: String,
         required: true,
@@ -21,8 +21,8 @@ const userSchema = new Schema({
     fullName:{
         type: String,
         required: true,
-        lowercase: true,
         trim: true,
+        index: true,
     },
     avatar:{
         type: String, //cloudinary url
@@ -34,8 +34,7 @@ const userSchema = new Schema({
     watchHistory: [{
         type: Schema.Types.ObjectId,
         ref: "Video",
-    }
-    ],
+    }],
     password:{
         type: String,
         required:[true, "Password is Required"]
@@ -45,14 +44,17 @@ const userSchema = new Schema({
     }
 },{timestamps: true});
 
+//checking the modification of password-Yes, then again encryption using bcrypt
+//If No  Modification then simple skip the code of encryption 
 userSchema.pre("save", async function (next){
     if(!this.isModified("password")) return next();
     this.password = await bcrypt.hash(this.password,10)
     next()
 })
 
-userSchema.models.isPasswordCorrect = async function (password){
-    return await bcrypt.compare(password,this.password);
+
+userSchema.methods.isPasswordCorrect = async function (password){
+    return await bcrypt.compare(password, this.password)
 }
 
 userSchema.methods.generateAccessToken = function(){
