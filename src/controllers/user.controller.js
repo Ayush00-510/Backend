@@ -25,6 +25,15 @@ const generateAccessAndRefreshToken = async(userId) =>{
 }
 
 const registerUser = asyncHandler( async (req,res) =>{
+    // get user detail from Frontend
+    // validation -- not empty
+    // check if user already exists: username, email
+    // check for image and check for avatar
+    // upload them to cloudinary, avatar
+    // create user object -- create entry in db
+    // remove the password and refresh token field from response
+    // check for user creation
+    // return res
     
     
     const { fullName , email, username, password } = req.body
@@ -157,8 +166,8 @@ const logoutUser = asyncHandler(async(req,res)=>{
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            $set: {
-                refreshToken: undefined
+            $unset: {
+                refreshToken: 1  // this removes field from document
             }
         },
         {
